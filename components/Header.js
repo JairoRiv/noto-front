@@ -12,8 +12,11 @@ const Header = () => {
       <nav>
         <ul>
           <li>
-            <a href="#">Crear Nota</a>
+            <Link href="/notes">
+              <a href="#">Crear Nota</a>
+            </Link>
           </li>
+
           <li>
             <a href="#">iniciar sesión</a>
           </li>
