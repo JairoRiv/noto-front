@@ -1,11 +1,17 @@
 import Layout from "../../components/Layout";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
 
-const Notes = ()=>{
-    return(
-        <Layout>
-            <h1>Hola soy la página de crear notas</h1>
-        </Layout>
-    )
-}
+const Notes = () => {
+  const ReactQuill = dynamic(import("react-quill"), {
+    ssr: false,
+    loading: () => <p>Loading ...</p>,
+  });
+  return (
+    <Layout>
+      <ReactQuill theme="snow" />
+    </Layout>
+  );
+};
 
-export default Notes
+export default Notes;
