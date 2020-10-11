@@ -35,6 +35,9 @@ const Notes = () => {
       .then((response) => {
         console.log(response);
       })
+      .then(() => {
+        Router.push("/");
+      })
       .catch((error) => {
         console.error(error);
       });
@@ -46,12 +49,41 @@ const Notes = () => {
         <form>
           <label>Titulo:</label>
           <input type="text" name="title" value={title} onChange={onChange} />
-          <ReactQuill theme="snow" value={content} onChange={setContent} />
+          <div className="contentQuill">
+            <ReactQuill theme="snow" value={content} onChange={setContent} />
+          </div>
           <button type="submit" onClick={submitData}>
             Guardar
           </button>
         </form>
       </div>
+      <style jsx>{`
+        form {
+          display: flex;
+          flex-direction: column;
+        }
+        label {
+          margin: 11px;
+          font-weight: bold;
+          font-size: 23px;
+        }
+        input {
+          width: 300px;
+          margin: 0 0 20px 11px;
+        }
+        .contentQuill {
+          width: 90%;
+          margin: 0 0 20px 11px;
+        }
+        button{
+          width: 100px;
+          height: 30px;
+          border-radius: 20px;
+          color:white;
+          margin: 0 0 0 11px;
+          background-color:#1e530b;
+        }
+      `}</style>
     </Layout>
   );
 };

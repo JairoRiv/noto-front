@@ -10,7 +10,10 @@ export default function Home({ data }) {
             <Link href={"/notes/" + notes._id}>
               <a>
                 <p className="title">{notes.title}</p>
-                <p className="content">{notes.content}</p>
+                <div
+                  className="content"
+                  dangerouslySetInnerHTML={{ __html: notes.content }}
+                />
               </a>
             </Link>
           </div>
@@ -42,6 +45,8 @@ export default function Home({ data }) {
             margin: 7px 0;
           }
           .content {
+            width:70%;
+            border-radius: 0;
             margin: 0 20px 10px 20px;
             display: -webkit-box;
             -webkit-box-orient: vertical;
