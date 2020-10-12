@@ -13,9 +13,10 @@ const ReactQuill = dynamic(import("react-quill"), {
 //Import components
 import Layout from "../../components/Layout";
 
-const Notes = () => {
-  const [content, setContent] = useState("");
-  const [title, setTitle] = useState("");
+const Note = ({ note }) => {
+  //initial state
+  const [content, setContent] = useState(note.data.content);
+  const [title, setTitle] = useState(note.data.title);
 
   // def function onChange
   const onChange = (e) => {
@@ -33,7 +34,21 @@ const Notes = () => {
     };
 
     axios
-      .post("https://notoapi.herokuapp.com/api/notes", data)
+      .put(`https://notoapi.herokuapp.com/api/notes/${note.data._id}`, data)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  //def functoin delete note
+  const deleteNote = (e) => {
+    e.preventDefault();
+
+    axios
+      .delete(`https://notoapi.herokuapp.com/api/notes/${note.data._id}`)
       .then((response) => {
         console.log(response);
       })
@@ -54,9 +69,14 @@ const Notes = () => {
           <div className="contentQuill">
             <ReactQuill theme="snow" value={content} onChange={setContent} />
           </div>
-          <button type="submit" onClick={submitData}>
-            Guardar
-          </button>
+          <div className="buttons">
+            <button className="save" type="submit" onClick={submitData}>
+              Guardar
+            </button>
+            <button className="delete" type="submit" onClick={deleteNote}>
+              Borrar
+            </button>
+          </div>
         </form>
       </div>
       <style jsx>{`
@@ -77,17 +97,50 @@ const Notes = () => {
           width: 90%;
           margin: 0 0 20px 11px;
         }
-        button{
+        .buttons {
+          display: flex;
+          justify-content: space-around;
+        }
+        .save {
           width: 100px;
           height: 30px;
           border-radius: 20px;
-          color:white;
+          color: white;
           margin: 0 0 0 11px;
-          background-color:#1e530b;
+          background-color: #1e530b;
+        }
+        .delete {
+          width: 100px;
+          height: 30px;
+          border-radius: 20px;
+          color: white;
+          margin: 0 0 0 11px;
+          background-color: #db0f0f;
         }
       `}</style>
     </Layout>
   );
 };
 
-export default Notes;
+export default Note;
+
+export async function getStaticPaths() {
+  const res = await fetch(process.env.API_HOST);
+  const notes = await res.json();
+
+  // Get the paths we want to pre-render based on posts
+  const paths = notes.data.map((note) => ({
+    params: {
+      id: note._id,
+    },
+  }));
+
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }) {
+  const res = await fetch(`${process.env.API_HOST}${params.id}`);
+  const note = await res.json();
+
+  return { props: { note } };
+}

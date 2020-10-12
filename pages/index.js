@@ -44,7 +44,7 @@ export default function Home({ data }) {
             font-weight: bold;
             margin: 7px 0;
           }
-          .content {
+          a .content {
             width:70%;
             border-radius: 0;
             margin: 0 20px 10px 20px;
