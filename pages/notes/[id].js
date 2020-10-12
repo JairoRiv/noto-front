@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import "react-quill/dist/quill.snow.css";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import axios from "axios";
 
 //dynamically importing react-quill
@@ -13,10 +13,19 @@ const ReactQuill = dynamic(import("react-quill"), {
 //Import components
 import Layout from "../../components/Layout";
 
-const Note = ({ note }) => {
+const Note = ({ notes }) => {
+  //Use Router
+  const router = useRouter();
+  const { id } = router.query;
+
+  //Select Note
+  const notesData = notes.data.map(note => (note._id === id ? note : null))
+  const noteData = notesData.filter(el => el != null);
+  console.log(noteData[0]);
+
   //initial state
-  const [content, setContent] = useState(note.data.content);
-  const [title, setTitle] = useState(note.data.title);
+  const [content, setContent] = useState(noteData[0].content);
+  const [title, setTitle] = useState(noteData[0].title);
 
   // def function onChange
   const onChange = (e) => {
@@ -34,7 +43,7 @@ const Note = ({ note }) => {
     };
 
     axios
-      .put(`https://notoapi.herokuapp.com/api/notes/${note.data._id}`, data)
+      .put(`https://notoapi.herokuapp.com/api/notes/${id}`, data)
       .then((response) => {
         console.log(response);
       })
@@ -48,12 +57,12 @@ const Note = ({ note }) => {
     e.preventDefault();
 
     axios
-      .delete(`https://notoapi.herokuapp.com/api/notes/${note.data._id}`)
+      .delete(`https://notoapi.herokuapp.com/api/notes/${id}`)
       .then((response) => {
         console.log(response);
       })
       .then(() => {
-        Router.push("/");
+        router.push("/");
       })
       .catch((error) => {
         console.error(error);
@@ -121,25 +130,13 @@ const Note = ({ note }) => {
     </Layout>
   );
 };
+export default Note;
 
-export async function getStaticPaths() {
+export async function getServerSideProps() {
+  // Fetch data from external API
   const res = await fetch(process.env.API_HOST);
   const notes = await res.json();
 
-  // Get the paths we want to pre-render based on posts
-  const paths = notes.data.map((note) => ({
-    params: {
-      id: note._id,
-    },
-  }));
-
-  return { paths, fallback: false };
+  // Pass data to the page via props
+  return { props: { notes } };
 }
-
-export async function getStaticProps({ params }) {
-  const res = await fetch(`${process.env.API_HOST}${params.id}`);
-  const note = await res.json();
-
-  return { props: { note } };
-}
-export default Note;
