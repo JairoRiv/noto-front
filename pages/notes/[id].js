@@ -122,8 +122,6 @@ const Note = ({ note }) => {
   );
 };
 
-export default Note;
-
 export async function getStaticPaths() {
   const res = await fetch(process.env.API_HOST);
   const notes = await res.json();
@@ -144,3 +142,4 @@ export async function getStaticProps({ params }) {
 
   return { props: { note } };
 }
+export default Note;
