@@ -19,9 +19,8 @@ const Note = ({ notes }) => {
   const { id } = router.query;
 
   //Select Note
-  const notesData = notes.data.map(note => (note._id === id ? note : null))
-  const noteData = notesData.filter(el => el != null);
-  console.log(noteData[0]);
+  const notesData = notes.data.map((note) => (note._id === id ? note : null));
+  const noteData = notesData.filter((el) => el != null);
 
   //initial state
   const [content, setContent] = useState(noteData[0].content);
