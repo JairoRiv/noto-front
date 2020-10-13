@@ -46,6 +46,7 @@ const Note = ({ notes }) => {
       .then((response) => {
         console.log(response);
       })
+      .then(alert("nota actualizada"))
       .catch((error) => {
         console.error(error);
       });
